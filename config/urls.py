@@ -1,8 +1,18 @@
-from django.contrib import admin
-from django.urls import include, path
+from django.urls import path
+
+from authentication.views import (
+    LoginView,
+    LogoutView,
+    MeView,
+    RefreshView,
+    RegisterView,
+)
 
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
-    path("auth/", include("django.contrib.auth.urls")),
+    path("register/", RegisterView.as_view()),
+    path("login/", LoginView.as_view()),
+    path("refresh/", RefreshView.as_view()),
+    path("me/", MeView.as_view()),
+    path("logout/", LogoutView.as_view()),
 ]
