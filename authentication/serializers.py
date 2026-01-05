@@ -22,11 +22,12 @@ class RegisterSerializer(ModelSerializer):
         model = User
         fields = ("username", "email", "password")
 
-    def validate_password(self, value: str) -> None:
+    def validate_password(self, value: str) -> str:
         try:
             validate_password(value)
         except ValidationError as e:
             raise ValidationError from e
+        return value
 
     def create(self, validated_data: dict[str, Any]) -> User:
         try:
