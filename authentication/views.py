@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, cast
 
 from django.contrib.auth.models import User
 from rest_framework import generics, permissions
@@ -9,7 +9,6 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
-    TokenRefreshView,
 )
 
 from authentication.serializers import RegisterSerializer
@@ -21,22 +20,22 @@ class RegisterView(generics.CreateAPIView):
 
 
 class LoginView(TokenObtainPairView):
-    permission_classes = [permissions.AllowAny]
-
-
-class RefreshView(TokenRefreshView):
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [
+        permissions.AllowAny,
+    ]  # type: ignore[assignment]
 
 
 class MeView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [
+        permissions.IsAuthenticated,
+    ]
 
     def get(self, request: Request, *args: Any, **kwargs: Any) -> Response:
-        user: User = request.user
+        user = cast(User, request.user)
 
         return Response(
             {
-                "id": user.id,
+                "id": user.pk,
                 "username": user.username,
             }
         )
@@ -51,7 +50,7 @@ class LogoutView(APIView):
         if refresh is None:
             raise ValidationError("refresh token required")
 
-        token = RefreshToken(refresh)
+        token = RefreshToken(cast(Any, refresh))
         token.blacklist()
 
         return Response({"detail": "Logged out"})
