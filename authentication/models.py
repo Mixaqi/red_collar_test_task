@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, cast
 
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
@@ -15,7 +15,7 @@ class UserManager(BaseUserManager):
             raise ValueError("Email is required")
 
         email = self.normalize_email(email)
-        user: User = self.model(username=username, email=email, **extra_fields)
+        user = cast(User, self.model(username=username, email=email, **extra_fields))
         user.set_password(password)
         user.save(using=self._db)
         return user

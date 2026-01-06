@@ -6,7 +6,7 @@ readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
     "django>=6.0",
-    "django-stubs>=5.2.8",
+    "django-stubs[compatible-mypy]>=5.2.8",
     "djangorestframework>=3.16.1",
     "djangorestframework-gis>=1.2.0",
     "djangorestframework-stubs[compatible-mypy]>=3.16.6",
