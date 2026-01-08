@@ -19,7 +19,7 @@ def parse_point(location_data: dict[str, Any]) -> Point:
         coords = location_data["coordinates"]
         return Point(float(coords[0]), float(coords[1]), srid=4326)
     except (KeyError, TypeError, ValueError):
-        raise ValueError("Произошла ошибка при обработке данных") from None
+        raise ValueError("Error occured") from None
 
 
 def get_map_point(point: Point) -> MapPoint | None:

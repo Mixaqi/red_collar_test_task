@@ -36,12 +36,7 @@ class MessageSerializer(ModelSerializer):
     class Meta:
         model = Message
         fields = ["point", "text"]
-        read_only_fields = ["id", "pointcreated_at"]
-
-    def validate_point(self, value: MapPoint) -> MapPoint:
-        if not MapPoint.objects.filter(pk=value.pk).exists():
-            raise ValidationError("MapPoint does not exist.")
-        return value
+        read_only_fields = ["id", "created_at"]
 
     def create(self, validated_data: dict[str, Any]) -> Message:
         user = self.context["request"].user
