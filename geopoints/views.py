@@ -74,3 +74,22 @@ class PointSearchView(APIView):
         )
         serializer = MapPointSerializer(queryset, many=True)
         return Response(serializer.data)
+
+
+class MessageSearchView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request: Request) -> Response:
+        query_serializer = PointSearchSerializer(data=request.query_params)
+        if not query_serializer.is_valid():
+            return Response(query_serializer.errors, status=400)
+
+        data = query_serializer.validated_data
+        center_point = Point(data["longitude"], data["latitude"], srid=4326)
+        radius_km = data["radius"]
+
+        messages = Message.objects.filter(
+            point__location__distance_lt=(center_point, D(km=radius_km))
+        ).select_related("user", "point")
+        serializer = MessageSerializer(messages, many=True)
+        return Response(serializer.data)

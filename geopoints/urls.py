@@ -1,11 +1,24 @@
-from django.urls import path
+from django.urls import path, include
 
-from geopoints.views import MessageCreateView, PointCreateView, PointSearchView
+from geopoints.views import (
+    MessageCreateView,
+    MessageSearchView,
+    PointCreateView,
+    PointSearchView,
+)
 
 
 app_name = "geopoints"
 urlpatterns = [
     path("", PointCreateView.as_view(), name="point-create"),
-    path("message/", MessageCreateView().as_view(), name="message-create"),
     path("search/", PointSearchView.as_view(), name="points-search"),
+    path(
+        "message/",
+        include(
+            [
+                path("", MessageCreateView.as_view(), name="message-create"),
+                path("search/", MessageSearchView.as_view(), name="message-search"),
+            ]
+        ),
+    ),
 ]
