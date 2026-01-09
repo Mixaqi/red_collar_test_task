@@ -1,7 +1,12 @@
 from typing import Any, cast
 
 from django.contrib.gis.geos import GEOSGeometry, Point
-from rest_framework.serializers import PrimaryKeyRelatedField, ValidationError
+from rest_framework.serializers import (
+    FloatField,
+    PrimaryKeyRelatedField,
+    Serializer,
+    ValidationError,
+)
 from rest_framework_gis.fields import GeometryField
 from rest_framework_gis.serializers import GeoFeatureModelSerializer, ModelSerializer
 
@@ -41,3 +46,9 @@ class MessageSerializer(ModelSerializer):
     def create(self, validated_data: dict[str, Any]) -> Message:
         user = self.context["request"].user
         return Message.objects.create(user=user, **validated_data)
+
+
+class PointSearchSerializer(Serializer):
+    latitude = FloatField(min_value=-90, max_value=90)
+    longitude = FloatField(min_value=-180, max_value=180)
+    radius = FloatField(min_value=0)

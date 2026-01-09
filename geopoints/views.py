@@ -1,12 +1,20 @@
 from typing import Any
 
+from django.contrib.gis.geos import Point
+from django.contrib.gis.measure import D
+from django.db.models import QuerySet
 from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from geopoints.models import MapPoint, Message
-from geopoints.serializers import MapPointSerializer, MessageSerializer
+from geopoints.serializers import (
+    MapPointSerializer,
+    MessageSerializer,
+    PointSearchSerializer,
+)
 from geopoints.utils import get_map_point, parse_point
 
 
@@ -47,3 +55,22 @@ class MessageCreateView(CreateAPIView):
         response_data["location"] = {"type": "Point", "coordinates": [point.x, point.y]}
 
         return Response(response_data, status=201)
+
+
+class PointSearchView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request: Request) -> Response:
+        query_serializer = PointSearchSerializer(data=request.query_params)
+        if not query_serializer.is_valid():
+            return Response(query_serializer.errors, status=400)
+
+        data = query_serializer.validated_data
+        center_point = Point(data["longitude"], data["latitude"], srid=4326)
+        radius_km = data["radius"]
+
+        queryset: QuerySet[MapPoint] = MapPoint.objects.filter(
+            location__distance_lt=(center_point, D(km=radius_km))
+        )
+        serializer = MapPointSerializer(queryset, many=True)
+        return Response(serializer.data)
