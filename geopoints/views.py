@@ -3,7 +3,7 @@ from typing import Any
 from django.contrib.gis.geos import Point
 from django.contrib.gis.measure import D
 from django.db.models import QuerySet
-from rest_framework.generics import CreateAPIView
+from rest_framework.generics import CreateAPIView, ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -57,23 +57,25 @@ class MessageCreateView(CreateAPIView):
         return Response(response_data, status=201)
 
 
-class PointSearchView(APIView):
+class PointSearchView(ListAPIView):
+    serializer_class = MapPointSerializer
     permission_classes = [IsAuthenticated]
 
-    def get(self, request: Request) -> Response:
-        query_serializer = PointSearchSerializer(data=request.query_params)
-        if not query_serializer.is_valid():
-            return Response(query_serializer.errors, status=400)
+    def get_queryset(self) -> QuerySet[MapPoint]:
+        serializer = PointSearchSerializer(data=self.request.query_params)
+        serializer.is_valid(raise_exception=True)
 
-        data = query_serializer.validated_data
-        center_point = Point(data["longitude"], data["latitude"], srid=4326)
-        radius_km = data["radius"]
+        data = serializer.validated_data
 
-        queryset: QuerySet[MapPoint] = MapPoint.objects.filter(
-            location__distance_lt=(center_point, D(km=radius_km))
+        center_point = Point(
+            data["longitude"],
+            data["latitude"],
+            srid=4326,
         )
-        serializer = MapPointSerializer(queryset, many=True)
-        return Response(serializer.data)
+
+        return MapPoint.objects.filter(
+            location__distance_lt=(center_point, D(km=data["radius"]))
+        )
 
 
 class MessageSearchView(APIView):
