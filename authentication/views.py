@@ -2,19 +2,18 @@ from typing import Any, cast
 
 from django.contrib.auth.models import update_last_login
 from rest_framework import generics, permissions
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import AuthenticationFailed, ValidationError
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
 )
-from rest_framework.exceptions import AuthenticationFailed
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
-from authentication.serializers import RegisterSerializer
 from authentication.models import User
+from authentication.serializers import RegisterSerializer
 
 
 class RegisterView(generics.CreateAPIView):
