@@ -13,6 +13,8 @@ dependencies = [
     "mypy>=1.19.1",
     "pre-commit>=4.5.1",
     "psycopg[binary]>=3.3.2",
+    "pytest>=9.0.2",
+    "pytest-django>=4.11.1",
     "python-decouple>=3.8",
     "ruff>=0.14.10",
 ]
@@ -43,3 +45,7 @@ lines-after-imports = 2
 [tool.ruff.format]
 quote-style = "double"
 indent-style = "space"
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE="config.settings"
+# python_files=["tests.py"]
