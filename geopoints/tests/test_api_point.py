@@ -32,3 +32,27 @@ def test_create_point_persists_in_db(
     assert MapPoint.objects.count() == 1
     point = MapPoint.objects.get()
     assert point.user == user
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "invalid_payload, expected_code",
+    [
+        (
+            {"location": [1, 2]},
+            "not_an_object",
+        ),
+        (
+            {"location": {"type": "MultiPoint", "coordinates": [1, 1]}},
+            "invalid_type",
+        ),
+    ],
+)
+def test_create_invalid_point(
+    auth_client: APIClient, invalid_payload: dict[str, Any], expected_code: str
+) -> None:
+    response = auth_client.post("/api/points/", invalid_payload, format="json")
+    assert response.status_code == 400
+    assert "location" in response.data
+    error_detail = response.data["location"][0]
+    assert error_detail.code == expected_code

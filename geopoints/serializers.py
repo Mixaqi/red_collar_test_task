@@ -1,34 +1,23 @@
 from typing import Any, cast
 
-from django.contrib.gis.geos import GEOSGeometry, Point
 from rest_framework.serializers import (
     FloatField,
     PrimaryKeyRelatedField,
     Serializer,
-    ValidationError,
 )
-from rest_framework_gis.fields import GeometryField
 from rest_framework_gis.serializers import GeoFeatureModelSerializer, ModelSerializer
 
+from geopoints.fields import SafePointField
 from geopoints.models import MapPoint, Message
 
 
 class MapPointSerializer(GeoFeatureModelSerializer):
-    location = GeometryField()
+    location = SafePointField()
 
     class Meta:
         model = MapPoint
         geo_field = "location"
         fields = ("location", "created_at")
-
-    def validate_location(self, geo_value: GEOSGeometry) -> GEOSGeometry:
-        if geo_value.hasz:
-            raise ValidationError(
-                "Only 2D coordinates (longtitude and latitude) are allowed"
-            )
-        if not isinstance(geo_value, Point):
-            raise ValidationError(f"Use type Point instead of {geo_value.geom_type}.")
-        return geo_value
 
     def create(self, validated_data: dict[str, Any]) -> MapPoint:
         validated_data["user"] = self.context["request"].user
