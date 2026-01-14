@@ -3,6 +3,9 @@ from typing import Any
 import pytest
 from rest_framework.test import APIClient
 
+from authentication.models import User
+from geopoints.models import MapPoint
+
 
 @pytest.mark.django_db
 def test_create_point_success(
@@ -18,3 +21,14 @@ def test_create_point_unauthorized(valid_point_payload: dict[str, Any]) -> None:
     client = APIClient()
     response = client.post("/api/points/", valid_point_payload, format="json")
     assert response.status_code == 401
+
+
+@pytest.mark.django_db
+def test_create_point_persists_in_db(
+    auth_client: APIClient, valid_point_payload: dict[str, Any], user: User
+) -> None:
+    response = auth_client.post("/api/points/", valid_point_payload, format="json")
+    assert response.status_code == 201
+    assert MapPoint.objects.count() == 1
+    point = MapPoint.objects.get()
+    assert point.user == user
