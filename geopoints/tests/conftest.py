@@ -21,3 +21,8 @@ def auth_client(user: User) -> APIClient:
     refresh = RefreshToken.for_user(user)
     client.credentials(HTTP_AUTHORIZATION=f"Bearer {refresh.access_token}")
     return client
+
+
+@pytest.fixture
+def valid_point_payload() -> dict[str, Any]:
+    return {"location": {"type": "Point", "coordinates": [37.6173, 55.7558]}}
