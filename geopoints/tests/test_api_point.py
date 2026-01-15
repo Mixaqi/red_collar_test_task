@@ -46,6 +46,29 @@ def test_create_point_persists_in_db(
             {"location": {"type": "MultiPoint", "coordinates": [1, 1]}},
             "invalid_type",
         ),
+        (
+            {"location": {"type": "NOT_POINT_TYPE", "coordinates": [1, 1]}},
+            "invalid_type",
+        ),
+        (
+            {"location": {"type": "Point", "coordinates": ["37.6173", 90.1]}},
+            "invalid_coordinates",
+        ),
+        (
+            {"location": {"type": "Point", "coordinates": [90.1, ""]}},
+            "invalid_coordinates",
+        ),
+        ({"location": {"type": "Point"}}, "invalid_format"),
+        (
+            {
+                "location": {
+                    "type": "Point",
+                    "coordinates": [37.61, 55.75],
+                    "crs": {"type": "name", "properties": {"name": "EPSG:3857"}},
+                }
+            },
+            "invalid_structure",
+        ),
     ],
 )
 def test_create_invalid_point(
