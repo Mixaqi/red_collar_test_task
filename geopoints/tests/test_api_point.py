@@ -67,7 +67,12 @@ def test_create_point_persists_in_db(
                     "crs": {"type": "name", "properties": {"name": "EPSG:3857"}},
                 }
             },
-            "invalid_structure",
+            "invalid_srid",
+        ),
+        ({"location": {"type": "Point", "coordinates": [20, 120]}}, "invalid_latitude"),
+        (
+            {"location": {"type": "Point", "coordinates": [500, 20]}},
+            "invalid_longitude",
         ),
     ],
 )
