@@ -5,13 +5,19 @@ from rest_framework.test import APIClient
 
 from authentication.models import User
 from geopoints.models import MapPoint
+from geopoints.tests.conftest import POINT_CREATION_URL
+
+
+@pytest.fixture
+def valid_point_payload() -> dict[str, Any]:
+    return {"location": {"type": "Point", "coordinates": [37.6173, 55.7558]}}
 
 
 @pytest.mark.django_db
 def test_create_point_success(
     auth_client: APIClient, valid_point_payload: dict[str, Any]
 ) -> None:
-    response = auth_client.post("/api/points/", valid_point_payload, format="json")
+    response = auth_client.post(POINT_CREATION_URL, valid_point_payload, format="json")
     assert response.status_code == 201
     assert response.data["geometry"]["type"] == "Point"
 
@@ -19,7 +25,7 @@ def test_create_point_success(
 @pytest.mark.django_db
 def test_create_point_unauthorized(valid_point_payload: dict[str, Any]) -> None:
     client = APIClient()
-    response = client.post("/api/points/", valid_point_payload, format="json")
+    response = client.post(POINT_CREATION_URL, valid_point_payload, format="json")
     assert response.status_code == 401
 
 
@@ -27,7 +33,7 @@ def test_create_point_unauthorized(valid_point_payload: dict[str, Any]) -> None:
 def test_create_point_persists_in_db(
     auth_client: APIClient, valid_point_payload: dict[str, Any], user: User
 ) -> None:
-    response = auth_client.post("/api/points/", valid_point_payload, format="json")
+    response = auth_client.post(POINT_CREATION_URL, valid_point_payload, format="json")
     assert response.status_code == 201
     assert MapPoint.objects.count() == 1
     point = MapPoint.objects.get()
@@ -79,7 +85,7 @@ def test_create_point_persists_in_db(
 def test_create_invalid_point(
     auth_client: APIClient, invalid_payload: dict[str, Any], expected_code: str
 ) -> None:
-    response = auth_client.post("/api/points/", invalid_payload, format="json")
+    response = auth_client.post(POINT_CREATION_URL, invalid_payload, format="json")
     assert response.status_code == 400
     assert "location" in response.data
     error_detail = response.data["location"][0]
