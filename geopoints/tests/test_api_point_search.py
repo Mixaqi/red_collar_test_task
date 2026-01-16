@@ -29,3 +29,18 @@ def test_point_search_success(
     assert response.status_code == 200
     assert response.data["count"] == 2
     assert len(response.data["results"]["features"]) == 2
+
+
+@pytest.mark.parametrize(
+    "payload",
+    [
+        {"latitude": 100, "longitude": 37, "radius": 5},
+        {"latitude": 55, "longitude": -200, "radius": 5},
+        {"latitude": 55, "longitude": 37, "radius": -1},
+    ],
+)
+def test_point_search_invalid_params(
+    auth_client: APIClient, payload: dict[str, float]
+) -> None:
+    response = auth_client.get(POINT_SEARCH_URL, payload)
+    assert response.status_code == 400
