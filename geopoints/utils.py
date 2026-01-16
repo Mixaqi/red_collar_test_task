@@ -23,4 +23,7 @@ def parse_point(location_data: dict[str, Any]) -> Point:
 
 
 def get_map_point(point: Point) -> MapPoint | None:
-    return MapPoint.objects.filter(location=point).first()
+    try:
+        return MapPoint.objects.get(location=point)
+    except MapPoint.DoesNotExist:
+        return None
