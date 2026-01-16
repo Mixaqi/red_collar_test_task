@@ -56,3 +56,4 @@ class InvalidLongitudeError(GeoPointValidationError):
 class PointAlreadyExistsError(APIException):
     status_code = 409
     default_detail = "Point already exists"
+    default_code = "point_already_exists"

@@ -90,3 +90,15 @@ def test_create_invalid_point(
     assert "location" in response.data
     error_detail = response.data["location"][0]
     assert error_detail.code == expected_code
+
+
+@pytest.mark.django_db
+def test_create_point_duplicate_returns_409(
+    auth_client: APIClient, valid_point_payload: dict[str, Any]
+) -> None:
+    response1 = auth_client.post(POINT_CREATION_URL, valid_point_payload, format="json")
+    assert response1.status_code == 201
+
+    response2 = auth_client.post(POINT_CREATION_URL, valid_point_payload, format="json")
+    assert response2.status_code == 409
+    assert response2.data["detail"].code == "point_already_exists"
