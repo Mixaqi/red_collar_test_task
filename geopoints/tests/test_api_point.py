@@ -8,11 +8,6 @@ from geopoints.models import MapPoint
 from geopoints.tests.conftest import POINT_CREATION_URL
 
 
-@pytest.fixture
-def valid_point_payload() -> dict[str, Any]:
-    return {"location": {"type": "Point", "coordinates": [37.6173, 55.7558]}}
-
-
 @pytest.mark.django_db
 def test_create_point_success(
     auth_client: APIClient, valid_point_payload: dict[str, Any]
