@@ -12,7 +12,7 @@ from authentication.models import User
 
 
 class MapPoint(Model):
-    location = PointField(srid=4326)
+    location = PointField(srid=4326, unique=True)
     user = ForeignKey(User, on_delete=SET_NULL, null=True, blank=True)
     created_at: DateTimeField = DateTimeField(auto_now_add=True)
 

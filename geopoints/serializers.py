@@ -1,5 +1,6 @@
 from typing import Any, cast
 
+from django.db import IntegrityError, transaction
 from rest_framework.serializers import (
     FloatField,
     PrimaryKeyRelatedField,
@@ -7,6 +8,7 @@ from rest_framework.serializers import (
 )
 from rest_framework_gis.serializers import GeoFeatureModelSerializer, ModelSerializer
 
+from geopoints.exceptions import PointAlreadyExistsError
 from geopoints.fields import SafePointField
 from geopoints.models import MapPoint, Message
 
@@ -20,8 +22,12 @@ class MapPointSerializer(GeoFeatureModelSerializer):
         fields = ("location", "created_at")
 
     def create(self, validated_data: dict[str, Any]) -> MapPoint:
-        validated_data["user"] = self.context["request"].user
-        return cast(MapPoint, super().create(validated_data))
+        try:
+            with transaction.atomic():
+                validated_data["user"] = self.context["request"].user
+                return cast(MapPoint, super().create(validated_data))
+        except IntegrityError as e:
+            raise PointAlreadyExistsError() from e
 
 
 class MessageSerializer(ModelSerializer):

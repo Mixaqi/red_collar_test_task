@@ -1,4 +1,5 @@
 from django.core.exceptions import ValidationError
+from rest_framework.exceptions import APIException
 
 
 class GeoPointValidationError(ValidationError):
@@ -50,3 +51,8 @@ class InvalidLatitudeError(GeoPointValidationError):
 class InvalidLongitudeError(GeoPointValidationError):
     message = "Longitude must be between -180 and 180"
     code = "invalid_longitude"
+
+
+class PointAlreadyExistsError(APIException):
+    status_code = 409
+    default_detail = "Point already exists"
