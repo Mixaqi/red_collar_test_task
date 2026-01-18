@@ -104,3 +104,96 @@ uv run pytest
 To ensure code quality before every commit, initialize **pre-commit**
 
 ```uv run pre-commit install```
+
+# Endpoints
+Base URL
+```
+http://127.0.0.1:8000/api/
+```
+
+All protected endpoints require JWT authentication
+```
+Authorization: Bearer <access token>
+```
+
+## Authentication
+
+### Register:
+
+**POST** ```/api/auth/register/```
+
+**Request body**:
+```
+{
+    "username": "testuser",
+    "email": "test@mail.com",
+    "password": "password123Test"
+}
+```
+
+**Response:**
+```
+{
+    "username": "testuser",
+    "email": "test@mail.com"
+}
+```
+
+### Login:
+
+**POST** ```/api/auth/login/```
+**Request body**:
+```
+{
+    "username": "testuser",
+    "password": "password123Test"
+}
+```
+
+**Response:**
+```
+{
+    "refresh": "refresh_token",
+    "access": "access_token"
+}
+```
+
+### Refresh access token
+
+**POST** ```/api/auth/refresh/```
+**Request body**:
+```
+{
+    "refresh": "refresh_token"
+}
+```
+
+**Response:**
+```
+{
+    "access": "access_token",
+    "refresh": "refresh_token"
+}
+```
+
+### Current user (Protected):
+**GET** ```/api/auth/me/```
+
+**Response:**
+```
+{
+    "id": id,
+    "username": "username"
+}
+```
+
+### Logout (Protected):
+**POST** ```/api/auth/logout/```
+
+
+
+
+
+
+
+
