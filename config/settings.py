@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     "geopoints",
     # 3rd party
     "rest_framework",
+    "rest_framework_simplejwt.token_blacklist",
     "django.contrib.gis",
 ]
 
