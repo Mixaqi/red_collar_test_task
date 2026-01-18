@@ -116,7 +116,8 @@ All protected endpoints require JWT authentication
 Authorization: Bearer <access token>
 ```
 
-## Authentication
+## Authentication 
+```/api/auth/```
 
 ### Register:
 
@@ -189,6 +190,7 @@ Authorization: Bearer <access token>
 
 ### Logout (Protected):
 **POST** ```/api/auth/logout/```
+**Request body:**
 ```
 {
     "refresh": "refresh_token"
@@ -201,9 +203,121 @@ Authorization: Bearer <access token>
     "detail": "Logged out"
 }
 ```
+## Geo Points (Protected)
+```/api/points/```
 
+### Create point:
 
+**POST** ```/api/points/```
+**Request body:**
+```
+{
+    "location": {"type": "Point", "coordinates": [11.88, 14.86]}
+}
+```
 
+**Response**
+```
+{
+    "type": "Feature",
+    "geometry": {
+        "type": "Point",
+        "coordinates": [
+            11.88,
+            14.86
+        ]
+    },
+    "properties": {
+        "created_at": "2026-01-18T09:58:15.204377Z"
+    }
+}
+```
+**Rules**
+1. Only GeoJSON Point is allowed
+2. Coordinates order: [lon, lat]
+3. SRID must be 4326
+4. Latitude range: [-90, 90]
+5. Longitude range: [-180, 180]
+6. Point location must be unique
 
+ ### Points search (Another points in this radius):
+**GET** ```/api/points/search/?latitude=14.86&longitude=11.88&offset=0&radius=5```
+
+**Response:**
+```
+{
+    "count": 1,
+    "next": null,
+    "previous": null,
+    "results": {
+        "type": "FeatureCollection",
+        "features": [
+            {
+                "type": "Feature",
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                        11.88,
+                        14.87
+                    ]
+                },
+                "properties": {
+                    "created_at": "2026-01-16T18:45:57.082802Z"
+                }
+            },
+
+        ]
+    }
+}
+```
+### Add message to point 
+**POST** ```/api/points/message/```
+
+**Request body:**
+```
+{
+  "text": "Hello world",
+  "location": {
+    "type": "Point",
+    "coordinates": [11.88, 14.86]
+  }
+}
+```
+
+**Response:**
+```
+{
+    "text": "Hello world",
+    "created_at": "2026-01-18T10:12:38.499704Z",
+    "location": {
+        "type": "Point",
+        "coordinates": [
+            11.88,
+            14.86
+        ]
+    }
+}
+```
+
+### Search points in current radius
+**POST** 
+```/api/points/message/search/?latitude=14.86&longitude=11.88&radius=5```
+
+**Response:**
+```
+[
+    {
+        "text": "Hello world",
+        "created_at": "2026-01-18T10:12:38.499704Z",
+        "location": {
+            "type": "Point",
+            "coordinates": [
+                11.88,
+                14.86
+            ]
+        }
+    }
+]
+```
 
 
