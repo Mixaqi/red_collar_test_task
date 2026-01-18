@@ -189,8 +189,18 @@ Authorization: Bearer <access token>
 
 ### Logout (Protected):
 **POST** ```/api/auth/logout/```
+```
+{
+    "refresh": "refresh_token"
+}
+```
 
-
+**Response:** 
+```
+{
+    "detail": "Logged out"
+}
+```
 
 
 
