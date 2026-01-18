@@ -240,6 +240,11 @@ Authorization: Bearer <access token>
 5. Longitude range: [-180, 180]
 6. Point location must be unique
 
+**Errors**
+* 400 - Invalid geodata
+* 409 - Point with same location already exists
+* 401 - Unauthorized
+
  ### Points search (Another points in this radius):
 **GET** ```/api/points/search/?latitude=14.86&longitude=11.88&offset=0&radius=5```
 
@@ -270,6 +275,10 @@ Authorization: Bearer <access token>
     }
 }
 ```
+**Errors**
+* 400 - missing or invalid parameters
+* 401 - unauthorized
+
 ### Add message to point 
 **POST** ```/api/points/message/```
 
@@ -283,6 +292,9 @@ Authorization: Bearer <access token>
   }
 }
 ```
+**Behavior**
+* If geo point does not exist -> 404
+* Message is created only for existing points
 
 **Response:**
 ```
@@ -298,6 +310,10 @@ Authorization: Bearer <access token>
     }
 }
 ```
+**Errors**
+* 400 - invalid location
+* 404 - no MapPoint found
+* 401 - unauthorized
 
 ### Search points in current radius
 **POST** 
@@ -319,5 +335,9 @@ Authorization: Bearer <access token>
     }
 ]
 ```
+**Errors**
+* 400 - incorrect data in query
+* 401 - unauthorized
+* 404 - Not found
 
 
