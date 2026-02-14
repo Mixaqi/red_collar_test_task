@@ -1,0 +1,30 @@
+{% load wagtailcore_tags %}
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<h1>{{ page.title }}</h1>
+{{ page.description|richtext }}
+
+<div id="map" style="height: 400px;"></div> <hr>
+
+{% for point in page.points.all %}
+    <p>
+        <b>Точка {{ point.pk }}</b>: 
+        {% for m in point.messages.all %}{{ m.text }}; {% endfor %}
+    </p>
+{% endfor %}
+
+<script>
+    var map = L.map('map').setView([0, 0], 2);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+    var bounds = [];
+    {% for p in page.points.all %}
+        var coords = [{{ p.location.y|stringformat:"f" }}, {{ p.location.x|stringformat:"f" }}];
+        L.marker(coords).addTo(map).bindPopup("ID: {{ p.pk }}");
+        bounds.push(coords);
+    {% endfor %}
+
+    if (bounds.length) map.fitBounds(bounds);
+</script>

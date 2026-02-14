@@ -7,19 +7,29 @@ from django.contrib.gis.db.models import (
     PointField,
     TextField,
 )
+from wagtail.admin.panels import FieldPanel
+from wagtail.snippets.models import register_snippet
+from wagtailgeowidget.panels import LeafletPanel
 
 from authentication.models import User
 
 
+@register_snippet
 class MapPoint(Model):
     location = PointField(srid=4326, unique=True)
     user = ForeignKey(User, on_delete=SET_NULL, null=True, blank=True)
     created_at: DateTimeField = DateTimeField(auto_now_add=True)
 
+    panels = [
+        LeafletPanel("location"),
+        FieldPanel("user"),
+    ]
+
     def __str__(self) -> str:
-        return f"Point {self.pk} at {self.location}"
+        return f"Point #{self.pk} [{self.location.y:.4f}, {self.location.x:.4f}]"
 
 
+@register_snippet
 class Message(Model):
     point = ForeignKey(MapPoint, on_delete=CASCADE, related_name="messages")
     text: TextField = TextField()
@@ -30,5 +40,5 @@ class Message(Model):
         if self.user:
             username = self.user.username
         else:
-            "Deleted User"
+            username = "Deleted User"
         return f"By {username} for point #{self.point.pk}: {self.text[:20]}..."

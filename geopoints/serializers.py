@@ -2,6 +2,7 @@ from typing import Any, cast
 
 from django.db import IntegrityError, transaction
 from rest_framework.exceptions import NotFound
+from rest_framework.generics import get_object_or_404
 from rest_framework.serializers import (
     FloatField,
     Serializer,
@@ -11,7 +12,6 @@ from rest_framework_gis.serializers import GeoFeatureModelSerializer, ModelSeria
 from geopoints.exceptions import PointAlreadyExistsError
 from geopoints.fields import SafePointField
 from geopoints.models import MapPoint, Message
-from geopoints.utils import get_map_point
 
 
 class MapPointSerializer(GeoFeatureModelSerializer):
@@ -36,12 +36,13 @@ class MessageSerializer(ModelSerializer):
 
     class Meta:
         model = Message
-        fields = ["text", "location", "created_at"]
-        read_only_fields = ["id", "created_at"]
+        fields = ("text", "location", "created_at")
+        read_only_fields = ("id", "created_at")
 
     def create(self, validated_data: dict[str, Any]) -> Message:
         point_geom = validated_data.pop("location")
-        map_point = get_map_point(point_geom)
+        map_point = get_object_or_404(MapPoint, location=point_geom)
+
         if not map_point:
             raise NotFound("No MapPoint found for these coordinates")
         user = self.context["request"].user

@@ -4,18 +4,14 @@ from pathlib import Path
 from decouple import config
 
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+LOG_DIR = BASE_DIR
 
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config("SECRET_KEY")
 
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", cast=bool, default=False)
 
 ALLOWED_HOSTS: list[str] = []
-
-# Application definition
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -24,9 +20,26 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.postgres",
+    # wagtail
+    "wagtail.contrib.forms",
+    "wagtail.contrib.redirects",
+    "wagtail.embeds",
+    "wagtail.sites",
+    "wagtail.users",
+    "wagtail.snippets",
+    "wagtail.documents",
+    "wagtail.images",
+    "wagtail.search",
+    "wagtail.admin",
+    "wagtailgeowidget",
+    "wagtail",
+    "modelcluster",
+    "taggit",
     # custom
     "authentication",
     "geopoints",
+    "cms",
     # 3rd party
     "rest_framework",
     "rest_framework_simplejwt.token_blacklist",
@@ -60,6 +73,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "wagtail.contrib.redirects.middleware.RedirectMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -81,10 +95,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
-
-# Database
-# https://docs.djangoproject.com/en/6.0/ref/settings/#databases
-
 DATABASES = {
     "default": {
         "ENGINE": "django.contrib.gis.db.backends.postgis",
@@ -95,10 +105,6 @@ DATABASES = {
         "PORT": config("POSTGRES_PORT", default="5432"),
     }
 }
-
-
-# Password validation
-# https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -118,10 +124,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
-# Internationalization
-# https://docs.djangoproject.com/en/6.0/topics/i18n/
-
 LANGUAGE_CODE = "en-us"
 
 TIME_ZONE = "UTC"
@@ -136,3 +138,6 @@ GDAL_LIBRARY_PATH = config("GDAL_LIBRARY_PATH")
 GEOS_LIBRARY_PATH = config("GEOS_LIBRARY_PATH")
 
 SESSION_SAVE_EVERY_REQUEST = True
+
+WAGTAILADMIN_BASE_URL = config("WAGTAILADMIN_BASE_URL")
+WAGTAIL_SITE_NAME = "Geo Django App"
