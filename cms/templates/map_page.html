@@ -1,29 +1,37 @@
 {% load wagtailcore_tags %}
-
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
 <h1>{{ page.title }}</h1>
-{{ page.description|richtext }}
 
-<div id="map" style="height: 400px;"></div> <hr>
+{% if page.description %}
+    <div class="page-description">
+        {{ page.description|richtext }}
+    </div>
+{% endif %}
 
-{% for point in page.points.all %}
-    <p>
-        <b>Точка {{ point.pk }}</b>: 
-        {% for m in point.messages.all %}{{ m.text }}; {% endfor %}
-    </p>
-{% endfor %}
+<div id="map" style="height: 500px;"></div>
 
 <script>
-    var map = L.map('map').setView([0, 0], 2);
+    const map = L.map('map').setView([0, 0], 2);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+    const bounds = [];
 
-    var bounds = [];
     {% for p in page.points.all %}
-        var coords = [{{ p.location.y|stringformat:"f" }}, {{ p.location.x|stringformat:"f" }}];
-        L.marker(coords).addTo(map).bindPopup("ID: {{ p.pk }}");
-        bounds.push(coords);
+    (() => {
+        const lat = {{ p.location.y|stringformat:"f" }};
+        const lon = {{ p.location.x|stringformat:"f" }};
+        let msgHtml = "<b>No messages</b>";
+        {% with msgs=p.messages.all %}
+            {% if msgs %}
+                msgHtml = "<ul>{% for m in msgs %}<li>{{ m.text|escapejs }}</li>{% endfor %}</ul>";
+            {% endif %}
+        {% endwith %}
+
+        L.marker([lat, lon]).addTo(map)
+            .bindPopup(`<b>ID: {{ p.pk }}</b><br>[${lat}, ${lon}]<hr>${msgHtml}`);
+        bounds.push([lat, lon]);
+    })();
     {% endfor %}
 
     if (bounds.length) map.fitBounds(bounds);
