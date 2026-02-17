@@ -1,7 +1,6 @@
 from typing import Any, cast
 
 from django.db import IntegrityError, transaction
-from rest_framework.exceptions import NotFound
 from rest_framework.generics import get_object_or_404
 from rest_framework.serializers import (
     FloatField,
@@ -42,9 +41,6 @@ class MessageSerializer(ModelSerializer):
     def create(self, validated_data: dict[str, Any]) -> Message:
         point_geom = validated_data.pop("location")
         map_point = get_object_or_404(MapPoint, location=point_geom)
-
-        if not map_point:
-            raise NotFound("No MapPoint found for these coordinates")
         user = self.context["request"].user
         message = Message.objects.create(point=map_point, user=user, **validated_data)
         return message

@@ -6,7 +6,7 @@
 
 {% if page.description %}
     <div class="page-description">
-        {{ page.description|richtext }}
+        {% include_block page.description %}
     </div>
 {% endif %}
 

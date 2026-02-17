@@ -1,12 +1,18 @@
 from modelcluster.fields import ParentalManyToManyField
 from wagtail.admin.panels import FieldPanel
-from wagtail.fields import RichTextField
+from wagtail.blocks import RichTextBlock
+from wagtail.fields import StreamField
 from wagtail.models import Page
 
 
 class MapPage(Page):
     template = "map_page.html"
-    description = RichTextField(blank=True)
+    description = StreamField(
+        [
+            ("paragraph", RichTextBlock(label="text")),
+        ],
+        blank=True,
+    )
     points = ParentalManyToManyField(
         "geopoints.MapPoint", blank=True, related_name="pages"
     )
