@@ -18,6 +18,6 @@ class MapPage(Page):
     )
 
     content_panels = Page.content_panels + [
-        FieldPanel("description"),
-        FieldPanel("points"),
+        FieldPanel("description", heading="Описание"),
+        FieldPanel("points", heading="Точки"),
     ]
