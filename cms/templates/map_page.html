@@ -21,7 +21,7 @@
     (() => {
         const lat = {{ p.location.y|stringformat:"f" }};
         const lon = {{ p.location.x|stringformat:"f" }};
-        let msgHtml = "<b>No messages</b>";
+        let msgHtml = "<b>Нет сообщений</b>";
         {% with msgs=p.messages.all %}
             {% if msgs %}
                 msgHtml = "<ul>{% for m in msgs %}<li>{{ m.text|escapejs }}</li>{% endfor %}</ul>";
