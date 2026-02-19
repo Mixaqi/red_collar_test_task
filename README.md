@@ -1,6 +1,6 @@
-# Geo API (Django + PostGIS)
+# Geo API (Django, Wagtail, PostGIS)
 
-This is a simple Geo API built with **Django**, **Django REST Framework**, and **PostgreSQL + PostGIS**.  
+This is a simple Geo API built with **Django**, **Django REST Framework**, **Wagtail** and **PostgreSQL + PostGIS**.
 The project provides authentication, geo point management, and geo-based search.
 
 ---
@@ -10,6 +10,7 @@ The project provides authentication, geo point management, and geo-based search.
 - Python 3.14.2
 - Django
 - Django REST Framework
+- Wagtail
 - PostgreSQL + PostGIS
 - GeoDjango
 - SimpleJWT
@@ -279,7 +280,7 @@ Authorization: Bearer <access token>
 * 400 - missing or invalid parameters
 * 401 - unauthorized
 
-### Add message to point 
+### Add message to point
 **POST** ```/api/points/message/```
 
 **Request body:**
@@ -316,7 +317,7 @@ Authorization: Bearer <access token>
 * 401 - unauthorized
 
 ### Search points in current radius
-**POST** 
+**POST**
 ```/api/points/message/search/?latitude=14.86&longitude=11.88&radius=5```
 
 **Response:**

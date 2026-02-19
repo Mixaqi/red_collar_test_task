@@ -17,7 +17,7 @@ class MapPoint(Model):
     created_at: DateTimeField = DateTimeField(auto_now_add=True)
 
     def __str__(self) -> str:
-        return f"Point {self.pk} at {self.location}"
+        return f"Point #{self.pk} [{self.location.y:.4f}, {self.location.x:.4f}]"
 
 
 class Message(Model):
@@ -30,5 +30,5 @@ class Message(Model):
         if self.user:
             username = self.user.username
         else:
-            "Deleted User"
+            username = "Deleted User"
         return f"By {username} for point #{self.point.pk}: {self.text[:20]}..."
