@@ -9,12 +9,7 @@ from geopoints.models import MapPoint, Message
 
 class MapPointViewSet(SnippetViewSet):
     model = MapPoint
-    list_display = ["location", "user", "created_at"]
-    list_display_labels = {
-        "location": _("Локация"),
-        "user": _("Пользователь"),
-        "created_at": _("Дата создания"),
-    }
+    list_display = ["__str__", "user", "created_at"]
 
     panels: list[LeafletPanel | FieldPanel] = [
         LeafletPanel("location", heading=_("Точка")),
@@ -25,11 +20,6 @@ class MapPointViewSet(SnippetViewSet):
 class MessageViewSet(SnippetViewSet):
     model = Message
     list_display = ["text", "point", "user"]
-    list_display_labels = {
-        "text": _("Текст"),
-        "user": _("Пользователь"),
-        "created_at": _("Дата создания"),
-    }
     panels: list[FieldPanel] = [
         FieldPanel("point", heading=_("Точка")),
         FieldPanel("text", heading=_("Текст")),

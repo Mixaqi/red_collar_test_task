@@ -20,12 +20,15 @@ class MapPoint(Model):
         auto_now_add=True, verbose_name="Дата создания"
     )
 
+    def coords_display(self) -> str:
+        return f"Точка ({self.location.y:.4f}, {self.location.x:.4f})"
+
     class Meta:
         verbose_name = "Точка на карте"
         verbose_name_plural = "Точки на карте"
 
     def __str__(self) -> str:
-        return f"Точка #[{self.location.y:.4f}, {self.location.x:.4f}]"
+        return f"Точка [{self.location.y:.4f}, {self.location.x:.4f}]"
 
 
 class Message(Model):
@@ -49,4 +52,4 @@ class Message(Model):
             username = self.user.username
         else:
             username = "Удаленный пользователь"
-        return f"От пользователя {username} для точки #{self.point.pk}: {self.text[:20]}..."
+        return f"От пользователя {username} для точки ({self.point.location.x}, {self.point.location.y}) {self.text[:20]}..."
