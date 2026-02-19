@@ -20,9 +20,6 @@ class MapPoint(Model):
         auto_now_add=True, verbose_name="Дата создания"
     )
 
-    def coords_display(self) -> str:
-        return f"Точка ({self.location.y:.4f}, {self.location.x:.4f})"
-
     class Meta:
         verbose_name = "Точка на карте"
         verbose_name_plural = "Точки на карте"
