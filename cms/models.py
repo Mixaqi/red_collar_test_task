@@ -21,3 +21,7 @@ class MapPage(Page):
         FieldPanel("description", heading="Описание"),
         FieldPanel("points", heading="Точки"),
     ]
+
+    class Meta:
+        verbose_name: str = "Страница с картой"
+        verbose_name_plural: str = "Страницы с картами"

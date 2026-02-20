@@ -18,7 +18,7 @@ class MapPointViewSet(SnippetViewSet):
 
     panels: list[LeafletPanel | FieldPanel] = [
         LeafletPanel("location", heading="Точка"),
-        FieldPanel("user", heading="Пользователь"),
+        FieldPanel("user", heading="Пользователь", read_only=True),
     ]
 
 
