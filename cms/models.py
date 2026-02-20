@@ -9,7 +9,7 @@ class MapPage(Page):
     template = "map_page.html"
     description = StreamField(
         [
-            ("paragraph", RichTextBlock(label="text")),
+            ("paragraph", RichTextBlock(label="текст")),
         ],
         blank=True,
     )
