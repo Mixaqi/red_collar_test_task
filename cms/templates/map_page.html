@@ -17,19 +17,19 @@
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
     const bounds = [];
 
-    {% for p in page.points.all %}
+    {% for mp in page.map_points.all %}
     (() => {
-        const lat = {{ p.location.y|stringformat:"f" }};
-        const lon = {{ p.location.x|stringformat:"f" }};
+        const lat = {{ mp.point.location.y|stringformat:"f" }};
+        const lon = {{ mp.point.location.x|stringformat:"f" }};
         let msgHtml = "<b>Нет сообщений</b>";
-        {% with msgs=p.messages.all %}
+        {% with msgs=mp.point.messages.all %}
             {% if msgs %}
                 msgHtml = "<ul>{% for m in msgs %}<li>{{ m.text|escapejs }}</li>{% endfor %}</ul>";
             {% endif %}
         {% endwith %}
 
         L.marker([lat, lon]).addTo(map)
-            .bindPopup(`<b>ID: {{ p.pk }}</b><br>[${lat}, ${lon}]<hr>${msgHtml}`);
+            .bindPopup(`<b>ID: {{ mp.point.pk }}</b><br>[${lat}, ${lon}]<hr>${msgHtml}`);
         bounds.push([lat, lon]);
     })();
     {% endfor %}
