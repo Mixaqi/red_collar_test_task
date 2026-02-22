@@ -8,7 +8,7 @@ from geopoints.models import MapPoint, Message
 class MapPointViewSet(SnippetViewSet):
     model = MapPoint
     add_to_admin_menu = True
-    list_display = ["__str__", "user", "created_at"]
+    list_display = ["display_coords", "user", "created_at"]
 
     panels = [
         LeafletPanel("location", heading="Точка"),

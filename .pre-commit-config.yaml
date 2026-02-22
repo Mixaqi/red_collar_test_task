@@ -15,9 +15,10 @@ repos:
 
       - id: ruff-imports
         name: ruff imports
-        entry: uv run ruff check --fix --select I
+        entry: uv run ruff check --fix --select I,F401
         language: system
         types: [python]
+        pass_filenames: true
 
       - id: mypy
         name: mypy

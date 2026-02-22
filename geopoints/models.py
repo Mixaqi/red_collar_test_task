@@ -24,6 +24,10 @@ class MapPoint(Model):
         verbose_name = "Точка на карте"
         verbose_name_plural = "Точки на карте"
 
+    @property
+    def display_coords(self) -> str:
+        return str(self)
+
     def __str__(self) -> str:
         return f"Точка [{self.location.y:.4f}, {self.location.x:.4f}]"
 
