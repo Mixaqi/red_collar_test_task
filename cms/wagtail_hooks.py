@@ -1,4 +1,5 @@
-from rest_framework.request import Request
+from django.http import HttpRequest
+from django.utils.safestring import mark_safe
 from wagtail import hooks
 from wagtail.admin.menu import MenuItem
 from wagtail.admin.panels import FieldPanel
@@ -51,12 +52,35 @@ def register_map_viewset() -> MapPageViewSet:
 
 
 @hooks.register("construct_main_menu")
-def hide_unused_buttons(request: Request, menu_items: list[MenuItem]) -> None:
+def hide_unused_buttons(request: HttpRequest, menu_items: list[MenuItem]) -> None:
     menu_items[:] = [
         item
         for item in menu_items
         if item.name not in ["documents", "images", "reports", "help", "settings"]
     ]
+
+
+@hooks.register("insert_global_admin_css")
+def hide_header_elements_css() -> str:
+    return mark_safe("""
+        <style>
+            a[href*="/history/"] {
+                display: none !important;
+            }
+
+            a[target="_blank"], a[href*="/view/"] {
+                display: none !important;
+            }
+            button[data-side-panel-toggle="status"],
+            .w-side-panel-toggle[data-side-panel-toggle="status"] {
+                display: none !important;
+            }
+
+            [data-side-panel="status"] {
+                display: none !important;
+            }
+        </style>
+    """)
 
 
 register_snippet(MapPointViewSet)
