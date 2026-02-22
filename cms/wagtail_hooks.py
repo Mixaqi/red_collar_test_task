@@ -79,6 +79,10 @@ def hide_header_elements_css() -> str:
             [data-side-panel="status"] {
                 display: none !important;
             }
+
+            th a[href*="ordering=content_type__model"] {
+                display: none !important;
+            }
         </style>
     """)
 
