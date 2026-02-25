@@ -134,8 +134,8 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 
-GDAL_LIBRARY_PATH = config("GDAL_LIBRARY_PATH")
-GEOS_LIBRARY_PATH = config("GEOS_LIBRARY_PATH")
+GDAL_LIBRARY_PATH: str | None = config("GDAL_LIBRARY_PATH", default=None)
+GEOS_LIBRARY_PATH: str | None = config("GEOS_LIBRARY_PATH", default=None)
 
 SESSION_SAVE_EVERY_REQUEST = True
 

@@ -51,3 +51,18 @@ indent-style = "space"
 
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE="config.settings"
+
+[tool.mypy]
+python_version = "3.14"
+warn_return_any = true
+ignore_missing_imports = true
+strict_optional = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+plugins = [
+    "mypy_django_plugin.main",
+    "mypy_drf_plugin.main"
+]
+
+[tool.django-stubs]
+django_settings_module = "config.settings"
