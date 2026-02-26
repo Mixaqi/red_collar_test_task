@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y \
     binutils \
     libproj-dev \
     curl \
+    bash \
     && rm -rf /var/lib/apt/lists/*
 
 RUN curl -Ls https://astral.sh/uv/install.sh | bash
