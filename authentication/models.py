@@ -33,11 +33,15 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    username: CharField = CharField(max_length=150, unique=True)
-    email: EmailField = EmailField(unique=True)
-    is_staff: BooleanField = BooleanField(default=False)
-    is_active: BooleanField = BooleanField(default=True)
-    date_joined: DateTimeField = DateTimeField(auto_now_add=True)
+    username: CharField = CharField(
+        max_length=150, unique=True, verbose_name="Имя пользователя"
+    )
+    email: EmailField = EmailField(unique=True, verbose_name="Электронная почта")
+    is_staff: BooleanField = BooleanField(default=False, verbose_name="Персонал")
+    is_active: BooleanField = BooleanField(default=True, verbose_name="Активен")
+    date_joined: DateTimeField = DateTimeField(
+        auto_now_add=True, verbose_name="Дата регистрации"
+    )
 
     USERNAME_FIELD: str = "username"
     REQUIRED_FIELDS = ["email"]

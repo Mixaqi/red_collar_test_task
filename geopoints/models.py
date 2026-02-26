@@ -1,3 +1,4 @@
+from django.contrib.admin import display
 from django.contrib.gis.db.models import (
     CASCADE,
     SET_NULL,
@@ -24,7 +25,7 @@ class MapPoint(Model):
         verbose_name = "Точка на карте"
         verbose_name_plural = "Точки на карте"
 
-    @property
+    @display(description="Координаты")
     def display_coords(self) -> str:
         return str(self)
 
