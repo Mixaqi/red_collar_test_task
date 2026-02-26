@@ -12,7 +12,10 @@ class MapPointViewSet(DisableUserFieldMixin, SnippetViewSet):
     list_display = ["display_coords", "user", "created_at"]
 
     panels = [
-        LeafletPanel("location", heading="Точка"),
+        LeafletPanel(
+            "location",
+            heading="Точка",
+        ),
         FieldPanel("user", heading="Пользователь"),
     ]
 

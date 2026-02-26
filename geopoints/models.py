@@ -22,8 +22,8 @@ class MapPoint(Model):
     )
 
     class Meta:
-        verbose_name = "Точка на карте"
-        verbose_name_plural = "Точки на карте"
+        verbose_name = "Точка на карте "
+        verbose_name_plural = "Точки на карте "
 
     @display(description="Координаты")
     def display_coords(self) -> str:

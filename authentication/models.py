@@ -34,7 +34,7 @@ class UserManager(BaseUserManager):
 
 class User(AbstractBaseUser, PermissionsMixin):
     username: CharField = CharField(
-        max_length=150, unique=True, verbose_name="Имя пользователя"
+        max_length=150, unique=True, verbose_name="имя пользователя"
     )
     email: EmailField = EmailField(unique=True, verbose_name="Электронная почта")
     is_staff: BooleanField = BooleanField(default=False, verbose_name="Персонал")

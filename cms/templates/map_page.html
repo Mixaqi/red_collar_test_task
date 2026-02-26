@@ -29,7 +29,7 @@
         {% endwith %}
 
         L.marker([lat, lon]).addTo(map)
-            .bindPopup(`<b>ID: {{ mp.point.pk }}</b><br>[${lat}, ${lon}]<hr>${msgHtml}`);
+            .bindPopup(`<br>[${lat}, ${lon}]<hr>${msgHtml}`);
         bounds.push([lat, lon]);
     })();
     {% endfor %}
