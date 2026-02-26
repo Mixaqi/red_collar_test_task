@@ -22,7 +22,8 @@ def hide_unused_buttons(request: HttpRequest, menu_items: list[MenuItem]) -> Non
     menu_items[:] = [
         item
         for item in menu_items
-        if item.name not in ["documents", "images", "reports", "help", "settings"]
+        if item.name
+        not in ["documents", "images", "reports", "help", "settings", "explorer"]
     ]
 
 
