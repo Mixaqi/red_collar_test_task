@@ -14,6 +14,7 @@ if TYPE_CHECKING:
 
 class MapPage(Page):
     template = "map_page.html"
+    parent_page_types = ["wagtailcore.Page"]
 
     description = StreamField(
         [
