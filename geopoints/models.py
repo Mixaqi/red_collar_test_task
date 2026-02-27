@@ -14,9 +14,7 @@ from authentication.models import User
 
 class MapPoint(Model):
     location = PointField(srid=4326, unique=True, verbose_name=("Локация"))
-    user = ForeignKey(
-        User, on_delete=SET_NULL, null=True, blank=True, verbose_name="Пользователь"
-    )
+    user = ForeignKey(User, on_delete=SET_NULL, null=True, verbose_name="Пользователь")
     created_at: DateTimeField = DateTimeField(
         auto_now_add=True, verbose_name="Дата создания"
     )
@@ -38,9 +36,7 @@ class Message(Model):
         MapPoint, on_delete=CASCADE, related_name="messages", verbose_name="Точка"
     )
     text: TextField = TextField(verbose_name="Текст")
-    user = ForeignKey(
-        User, on_delete=SET_NULL, null=True, blank=True, verbose_name="Пользователь"
-    )
+    user = ForeignKey(User, on_delete=SET_NULL, null=True, verbose_name="Пользователь")
     created_at: DateTimeField = DateTimeField(
         auto_now_add=True, verbose_name="Дата создания"
     )
