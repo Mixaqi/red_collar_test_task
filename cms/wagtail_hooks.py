@@ -17,11 +17,23 @@ ADMIN_CSS_FILES: list[str] = ["hide_status.css", "hide_header_elements.css"]
 
 @hooks.register("register_admin_viewset")
 def register_map_viewset() -> MapPageViewSet:
+    """Register the custom map viewset in the Wagtail admin.
+
+    Returns:
+        MapPageViewSet: The viewset class used by Wagtail admin to manage map pages.
+    """
     return map_viewset
 
 
 @hooks.register("construct_main_menu")
 def hide_unused_buttons(request: HttpRequest, menu_items: list[MenuItem]) -> None:
+    """Remove unused buttons from the main Wagtail admin menu.
+
+    Args:
+        request (HttpRequest): The current request object
+        menu_items (list[MenuItem]): List of existing menu items, which will be modified in-place.
+    """
+
     menu_items[:] = [
         item
         for item in menu_items
@@ -32,6 +44,11 @@ def hide_unused_buttons(request: HttpRequest, menu_items: list[MenuItem]) -> Non
 
 @hooks.register("insert_global_admin_css")
 def insert_admin_css() -> str:
+    """Insert global CSS files into the Wagtail admin.
+
+    Returns:
+        str: HTML <link> tags for each CSS file specified in ADMIN_CSS_FILES.
+    """
     return format_html_join(
         "\n",
         '<link rel="stylesheet" href="{}">',
