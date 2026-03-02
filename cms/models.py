@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING
 
 from django.db.models import CASCADE, ForeignKey
+from django.utils.translation import gettext_lazy as _
 from modelcluster.fields import ParentalKey
 from wagtail.admin.panels import FieldPanel, InlinePanel
 from wagtail.blocks import RichTextBlock
@@ -18,19 +19,19 @@ class MapPage(Page):
 
     description = StreamField(
         [
-            ("paragraph", RichTextBlock(label="текст")),
+            ("paragraph", RichTextBlock(label=_("Текст"))),
         ],
         blank=True,
     )
 
     content_panels = Page.content_panels + [
-        FieldPanel("description", heading="Описание"),
-        InlinePanel("map_points", label="Точки"),
+        FieldPanel("description", heading=_("Сообщение")),
+        InlinePanel("map_points", label=f"{_('Точки')}"),
     ]
 
     class Meta:
-        verbose_name = "Страница с картой"
-        verbose_name_plural = "Страницы с картами"
+        verbose_name = _("Страница с картой")
+        verbose_name_plural = _("Страницы с картой")
 
 
 class MapPagePoint(Orderable):
@@ -51,5 +52,9 @@ class MapPagePoint(Orderable):
     ]
 
     class Meta:
-        verbose_name = "Точка страницы"
-        verbose_name_plural = "Точки страницы"
+        verbose_name = _("Точка на странице")
+        verbose_name_plural = _("Точки на странице")
+
+
+class HomePage(Page):
+    template = "home_page.html"
