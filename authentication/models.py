@@ -6,9 +6,25 @@ from django.db.models import BooleanField, CharField, DateTimeField, EmailField
 
 
 class UserManager(BaseUserManager):
+    """Manager for custom User model.Implemented methods for user/superuser creation."""
+
     def create_user(
         self, username: str, email: str, password: str, **extra_fields: Any
     ) -> User:
+        """Creates and saves a regular user with the speciefied data.
+
+        Args:
+            username(str): The username of the user
+            email(str): The user's email address
+            password(str): The user's password
+            **extra_fields(Any): Additional fields
+
+        Raises:
+            ValueError: If username or email is not provided
+
+        Returns:
+            User: The created user instance.
+        """
         if not username:
             raise ValueError("Username is required")
         if not email:
@@ -23,6 +39,20 @@ class UserManager(BaseUserManager):
     def create_superuser(
         self, username: str, email: str, password: str, **extra_fields: Any
     ) -> User:
+        """Creates and saves a superuser with the given username, email and password.
+
+        Args:
+            username (str): The username of the superuser.
+            email (str): The superuser's email address.
+            password (str): The superuser's password.
+            **extra_fields: Additional fields to set on the user model.
+
+        Raises:
+            ValueError: If username or email is not provided
+
+        Returns:
+            User: The created user instance
+        """
         extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_superuser", True)
 
@@ -33,6 +63,16 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
+    """Custom user model.
+
+    Attributes:
+        username (str): Unique username.
+        email: (str): Unique email address.
+        is_staff (bool): Indicates if the user can access the admin site
+        is_active (bool): Indicates if the user is active
+        date_joined (datetime): The date and time when user joined
+    """
+
     username: CharField = CharField(
         max_length=150, unique=True, verbose_name="имя пользователя"
     )
