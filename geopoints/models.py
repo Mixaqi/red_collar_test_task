@@ -19,10 +19,6 @@ class MapPoint(Model):
         location (PointField): Geographic location of the point (SRID 4326), unique.
         user (ForeignKey[User]): User who created the point. Can be null if deleted.
         created_at (DateTimeField): Timestamp when the point was created.
-
-    Methods:
-        display_coords() -> str:
-            Returns a string representation of the point's coordinates for admin display.
     """
 
     location = PointField(srid=4326, unique=True, verbose_name=("Локация"))
