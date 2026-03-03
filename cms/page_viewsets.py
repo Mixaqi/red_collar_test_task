@@ -4,6 +4,12 @@ from cms.models import MapPage
 
 
 class MapPageViewSet(PageListingViewSet):
+    """Admin viewset for listing and managing MapPage instances.
+
+    Registers a custom page listing in the Wagtail admin under
+    a separate menu section labeled "Карты".
+    """
+
     model = MapPage
     icon = "site"
     menu_label = "Карты"

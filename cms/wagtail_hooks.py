@@ -31,7 +31,8 @@ def hide_unused_buttons(request: HttpRequest, menu_items: list[MenuItem]) -> Non
 
     Args:
         request (HttpRequest): The current request object
-        menu_items (list[MenuItem]): List of existing menu items, which will be modified in-place.
+        menu_items (list[MenuItem]): List of existing menu items, which will be modified
+        in-place.
     """
 
     menu_items[:] = [

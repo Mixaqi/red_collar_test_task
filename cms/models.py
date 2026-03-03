@@ -14,6 +14,13 @@ if TYPE_CHECKING:
 
 
 class MapPage(Page):
+    """Page model that displays a map with related map points.
+
+    Provides a rich-text description block and allows attaching
+    multiple MapPoint objects via an inline relationship. Links with
+    map_page.html template
+    """
+
     template = "map_page.html"
     parent_page_types = ["wagtailcore.Page"]
 
@@ -35,6 +42,8 @@ class MapPage(Page):
 
 
 class MapPagePoint(Orderable):
+    """Intermediate model linking MapPage with MapPoint."""
+
     page = ParentalKey(
         "cms.MapPage",
         on_delete=CASCADE,
@@ -54,7 +63,3 @@ class MapPagePoint(Orderable):
     class Meta:
         verbose_name = _("Точка на странице")
         verbose_name_plural = _("Точки на странице")
-
-
-class HomePage(Page):
-    template = "home_page.html"

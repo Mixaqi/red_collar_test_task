@@ -7,6 +7,12 @@ from geopoints.models import MapPoint, Message
 
 
 class MapPointViewSet(DisableUserFieldMixin, SnippetViewSet):
+    """Admin viewset for managing MapPoint snippet.
+
+    Provides Wagtail admin configuration for creating, editing,
+    and listing map points. Integrates a Leaflet-based map widget
+    for selecting geographic coordinates."""
+
     model = MapPoint
     add_to_admin_menu = True
     list_display = ["display_coords", "user", "created_at"]
@@ -21,6 +27,11 @@ class MapPointViewSet(DisableUserFieldMixin, SnippetViewSet):
 
 
 class MessageViewSet(DisableUserFieldMixin, SnippetViewSet):
+    """Admin viewset for managing Message snippets.
+
+    Configures the Wagtail admin interface for creating, editing,
+    and listing user messages related to map points."""
+
     model = Message
     add_to_admin_menu = True
     list_display = ["text", "point", "user"]

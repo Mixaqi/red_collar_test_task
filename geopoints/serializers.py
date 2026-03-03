@@ -34,7 +34,8 @@ class MapPointSerializer(GeoFeatureModelSerializer):
         data integrity.
 
         Args:
-            validated_data (dict[str, Any]): Validated data containing location information.
+            validated_data (dict[str, Any]): Validated data containing location
+            information.
 
         Returns:
             The created MapPoint instance.
@@ -68,7 +69,8 @@ class MessageSerializer(ModelSerializer):
         """Creates a message and associates it with an existing MapPoint.
 
         Args:
-            validated_data (dict[str, Any]): Dictionary containing message text and location geometry.
+            validated_data (dict[str, Any]): Dictionary containing message text and
+            location geometry.
 
         Returns:
             The created Message instance.
@@ -80,7 +82,8 @@ class MessageSerializer(ModelSerializer):
         return message
 
     def to_representation(self, instance: Message) -> Any:
-        """Convert a Message instance into its serialized representation (JSON with point, created_at fields).
+        """Convert a Message instance into its serialized representation
+        (JSON with point, created_at fields).
 
         Args:
             instance (Message): The Message model instance
