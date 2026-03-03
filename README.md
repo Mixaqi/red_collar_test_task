@@ -1,7 +1,7 @@
 # Geo API (Django, Wagtail, PostGIS)
 
-This is a simple Geo API built with **Django**, **Django REST Framework**, **Wagtail** and **PostgreSQL + PostGIS**.
-The project provides authentication, geo point management, and geo-based search.
+This is a simple Geo API built with **Django**, **Django REST Framework**, **Docker**, **Wagtail** and **PostgreSQL + PostGIS**.
+The project provides authentication, geo point management, wagtail admin panel, and geo-based search.
 
 ---
 
@@ -10,6 +10,7 @@ The project provides authentication, geo point management, and geo-based search.
 - Python 3.14.2
 - Django
 - Django REST Framework
+- Docker
 - Wagtail
 - PostgreSQL + PostGIS
 - GeoDjango
@@ -30,6 +31,7 @@ The project provides authentication, geo point management, and geo-based search.
 - PostgreSQL with PostGIS extension enabled
 - GDAL
 - GEOS
+- Docker (out of the box)
 
 ---
 
@@ -79,6 +81,9 @@ POSTGRES_USER
 POSTGRES_PASSWORD
 POSTGRES_HOST
 POSTGRES_PORT
+
+#wagtail
+WAGTAILADMIN_BASE_URL
 ```
 
 ### Database & Server management
@@ -105,6 +110,39 @@ uv run pytest
 To ensure code quality before every commit, initialize **pre-commit**
 
 ```uv run pre-commit install```
+
+### Instalation & Setup (Docker way)
+
+### 1. Clone the repository
+```bash
+git clone https://github.com/Mixaqi/red_collar_test_task
+cd red_collar_test_task
+```
+
+### 2. Configure .env.docker file and put one into root of the project. Follow .env.docker.example instructions
+```
+#django
+SECRET_KEY
+DEBUG
+
+#db (Postgres + PostGIS)
+POSTGRES_DB
+POSTGRES_USER
+POSTGRES_PASSWORD
+POSTGRES_HOST
+POSTGRES_PORT
+
+#wagtail
+WAGTAILADMIN_BASE_URL
+```
+
+### 3. Run in terminal
+```bash
+docker-compose up --build
+```
+
+
+
 
 # Endpoints
 Base URL

@@ -1,0 +1,21 @@
+a[href*="/history/"] {
+    display: none !important;
+}
+
+a[target="_blank"],
+a[href*="/view/"] {
+    display: none !important;
+}
+
+button[data-side-panel-toggle="status"],
+.w-side-panel-toggle[data-side-panel-toggle="status"] {
+    display: none !important;
+}
+
+[data-side-panel="status"] {
+    display: none !important;
+}
+
+th a[href*="ordering=content_type__model"] {
+    display: none !important;
+}

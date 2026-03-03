@@ -1,0 +1,9 @@
+th:nth-child(5),
+td:nth-child(5) {
+    display: none !important;
+}
+
+th:nth-child(5) a[href*="ordering=-live"] {
+    display: none !important;
+}
+
