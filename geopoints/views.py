@@ -16,22 +16,39 @@ from geopoints.serializers import (
 
 
 class PointCreateView(CreateAPIView):
+    """API view to create a new MapPoint."""
+
     queryset = MapPoint.objects.all()
     serializer_class = MapPointSerializer
     permission_classes = [IsAuthenticated]
 
 
 class MessageCreateView(CreateAPIView):
+    """API view to create a new Message linked to a MapPoint"""
+
     queryset = Message.objects.all()
     serializer_class = MessageSerializer
     permission_classes = [IsAuthenticated]
 
 
 class PointSearchView(ListAPIView):
+    """API view to create a new Message linked to a MapPoint.
+
+    Accepts latitude, longitude and radius as query parameters and returns
+    all MapPoints within the specified radius
+    """
+
     serializer_class = MapPointSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self) -> QuerySet[MapPoint]:
+        """Built-in function redefined for point searching in define area.
+
+        It validates query parameters using PointSearchSerializer
+
+        Returns:
+            QuerySet[MapPoint]: MapPoint objects within the specified radius
+        """
         serializer = PointSearchSerializer(data=self.request.query_params)
         serializer.is_valid(raise_exception=True)
 
@@ -49,9 +66,24 @@ class PointSearchView(ListAPIView):
 
 
 class MessageSearchView(APIView):
+    """API view to search for Messages associated with MapPoints within a radius.
+
+    Accepts latitude, longitude, and radius as query parameters and returns
+    all Messages linked to MapPoints within the specified area."""
+
     permission_classes = [IsAuthenticated]
 
     def get(self, request: Request) -> Response:
+        """Retrieve Messages within the specified radius of a point
+        Args:
+            request (Request): DRF request containing query params
+                - latitude (float)
+                - longitude (float)
+                - radius (float, km)
+        Returns:
+            Response: Serialized list of Message objects within the radius
+        """
+
         query_serializer = PointSearchSerializer(data=request.query_params)
         if not query_serializer.is_valid():
             return Response(query_serializer.errors, status=400)

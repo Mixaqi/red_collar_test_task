@@ -1,0 +1,25 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+.ruff_cache/
+.mypy_cache/
+
+# Environments
+venv
+.venv
+.env
+*.env
+
+# Git
+.git
+.gitignore
+
+# IDEs
+.vscode/
+
+# Tests
+tests/
+test_*.py
+
+README.md
