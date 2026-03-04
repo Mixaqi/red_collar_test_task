@@ -145,3 +145,14 @@ WAGTAIL_SITE_NAME = "Geo Django App"
 WAGTAILADMIN_USER_LOGIN_FORM = "cms.forms.CustomLoginForm"
 
 WAGTAIL_ALLOW_UNICODE_SLUGS = False
+
+REDIS_PASSWORD: str = config("REDIS_PASSWORD", "super_secret_password")
+REDIS_HOST: str = config("REDIS_HOST", "127.0.0.1")
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:6379/0",
+        "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient"},
+    }
+}
