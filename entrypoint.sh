@@ -1,17 +1,17 @@
 #!/bin/bash
+set -e
+echo "Waiting for external services..."
 
-echo "Waiting for database..."
+if [[ "$*" == *"runserver"* ]]; then
+    echo "Running migrations..."
+    uv run manage.py migrate
 
-uv sync --frozen --no-dev
+    echo "Fixing Wagtail page tree..."
+    uv run manage.py fixtree
 
-uv run manage.py migrate
+    echo "Creating superuser (if not exists)..."
+    uv run manage.py createsuperuser --noinput || true
+fi
 
-echo "Fixing Wagtail page tree..."
-uv run manage.py fixtree
-
-echo "Creating superuser (if not exists)..."
-uv run manage.py createsuperuser --noinput || true
-
-echo "Starting server..."
-
-exec uv run manage.py runserver 0.0.0.0:8000
+echo "Starting container process..."
+exec "$@"

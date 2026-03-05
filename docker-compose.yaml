@@ -33,6 +33,18 @@ services:
       - .env.docker
     ports:
       - "8000:8000"
+    command: uv run manage.py runserver 0.0.0.0:8000
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  celery:
+    build: .
+    command: uv run celery -A config worker --loglevel=info
+    env_file:
+      - .env.docker
     depends_on:
       postgres:
         condition: service_healthy

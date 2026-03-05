@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework_simplejwt.token_blacklist",
     "django.contrib.gis",
+    "django_celery_results",
 ]
 
 REST_FRAMEWORK = {
@@ -156,3 +157,8 @@ CACHES = {
         "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient"},
     }
 }
+
+CELERY_RESULT_BACKEND = "django-db"
+CELERY_BROKER_URL: str = config("CELERY_BROKER_URL")
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_SOFT_TIME_LIMIT = 60

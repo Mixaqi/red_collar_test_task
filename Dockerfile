@@ -1,26 +1,33 @@
 FROM python:3.14-slim
 
 ENV PYTHONUNBUFFERED=1
-ENV PATH="/root/.local/bin:$PATH"
 
-RUN apt-get update && apt-get install -y \
-    libpq-dev \
-    gdal-bin \
-    binutils \
-    libproj-dev \
-    curl \
-    bash \
+RUN apt-get update \
+    && apt-get install -y  --no-install-recommends \
+        libpq-dev \
+        gdal-bin \
+        binutils \
+        libproj-dev \
+        curl \
+        bash \
     && rm -rf /var/lib/apt/lists/*
 
-RUN curl -Ls https://astral.sh/uv/install.sh | bash
+RUN useradd -m -u 1000 appuser \
+    && curl -Ls https://astral.sh/uv/install.sh | bash \
+    && mv /root/.local/bin/uv /usr/local/bin/uv
 
-WORKDIR /app
+USER appuser
+WORKDIR /home/appuser/app
 
-COPY pyproject.toml uv.lock ./
+COPY --chown=appuser:appuser pyproject.toml uv.lock ./
 
-COPY . .
+RUN uv sync --frozen --no-dev
 
+COPY --chown=appuser:appuser . .
+
+USER root
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
+USER appuser
 
 ENTRYPOINT ["/entrypoint.sh"]
