@@ -37,9 +37,11 @@ INSTALLED_APPS = [
     "modelcluster",
     "taggit",
     # custom
+    "config",
     "authentication",
     "geopoints",
     "cms",
+    "telegram",
     # 3rd party
     "rest_framework",
     "rest_framework_simplejwt.token_blacklist",
@@ -162,3 +164,6 @@ CELERY_RESULT_BACKEND = "django-db"
 CELERY_BROKER_URL: str = config("CELERY_BROKER_URL")
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_SOFT_TIME_LIMIT = 60
+
+TELEGRAM_BOT_TOKEN = config("TELEGRAM_BOT_TOKEN")
+TELEGRAM_CHAT_ID: int = config("TELEGRAM_CHAT_ID")
