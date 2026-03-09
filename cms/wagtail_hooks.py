@@ -61,11 +61,23 @@ def insert_admin_css() -> str:
     )
 
 
-@hooks.register("after_edit_page")
-def create_outbox_task(request: HttpRequest, page: Page) -> None:
+def _enqueue_page_event(page: Page, message: str) -> None:
     outbox = OutboxTask.objects.create(
-        task_name="send_telegram_message",
-        payload={"page_id": page.id, "title": page.title},
+        payload={
+            "page_id": page.id,
+            "title": page.title,
+            "message_text": message,
+        },
         status=OutboxStatus.PENDING,
     )
     transaction.on_commit(lambda: send_telegram_message.delay(outbox.id))
+
+
+@hooks.register("after_publish_page")
+def handle_publish(request: HttpRequest, page: Page) -> None:
+    _enqueue_page_event(page, f"Published: {page.title}")
+
+
+@hooks.register("after_create_page")
+def handle_draft(request: HttpRequest, page: Page) -> None:
+    _enqueue_page_event(page, f"Draft saved: {page.title}")

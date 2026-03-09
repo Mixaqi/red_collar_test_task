@@ -33,7 +33,7 @@ class MapPage(Page):
 
     content_panels = Page.content_panels + [
         FieldPanel("description", heading=_("Сообщение")),
-        InlinePanel("map_points", label=f"{_('Точки')}"),
+        InlinePanel("map_points", label=("Точки"), min_num=1),
     ]
 
     class Meta:
