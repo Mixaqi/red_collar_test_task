@@ -1,7 +1,9 @@
+from typing import Any
+
 from celery import Task, shared_task
 from httpx import HTTPStatusError, RequestError
 
-from config.models import OutboxStatus, OutboxTask
+from config.models import OutboxTask
 from telegram.utils import send_message
 
 
@@ -12,28 +14,18 @@ def send_telegram_message(self: Task, outbox_id: str) -> None:
     except OutboxTask.DoesNotExist:
         return
 
-    payload = outbox.payload
-    if payload is None:
-        outbox.status = OutboxStatus.FAILED
-        outbox.save(update_fields=["status"])
+    payload: dict[str, Any] | None = outbox.payload
+    if not payload or "message_text" not in payload:
+        outbox.mark_failed(self.request.retries)
         return
 
     try:
-        message_text: str = payload["message_text"]
-        send_message(message_text)
-
-        outbox.status = OutboxStatus.SUCCESS
-        outbox.retries = self.request.retries
-        outbox.save(update_fields=["status", "retries"])
+        send_message(payload["message_text"])
+        outbox.mark_success(self.request.retries)
 
     except (RequestError, HTTPStatusError) as e:
-        outbox.status = OutboxStatus.FAILED
-        outbox.retries = self.request.retries
-        outbox.save(update_fields=["status", "retries"])
-
+        outbox.mark_failed(self.request.retries)
         raise self.retry(exc=e) from e
 
     except Exception:
-        outbox.status = OutboxStatus.FAILED
-        outbox.retries = self.request.retries
-        outbox.save(update_fields=["status", "retries"])
+        outbox.mark_failed(self.request.retries)

@@ -36,5 +36,15 @@ class OutboxTask(TimeStampedModel):
     retries = IntegerField(default=0)
     payload = JSONField(null=True, blank=True)
 
+    def mark_failed(self, retries: int) -> None:
+        self.status = OutboxStatus.FAILED
+        self.retries = retries
+        self.save(update_fields=["status", "retries"])
+
+    def mark_success(self, retries: int) -> None:
+        self.status = OutboxStatus.SUCCESS
+        self.retries = retries
+        self.save(update_fields=["status", "retries"])
+
     def __str__(self) -> str:
         return f"{self.task_name} ({self.status})"
