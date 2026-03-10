@@ -1,4 +1,4 @@
-from httpx import Client, HTTPStatusError
+from httpx import Client
 
 from config.settings import TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID
 
@@ -12,7 +12,4 @@ def _post(method: str, data: dict[str, str | int]) -> None:
 
 
 def send_message(text: str) -> None:
-    try:
-        _post("sendMessage", {"chat_id": TELEGRAM_CHAT_ID, "text": text})
-    except HTTPStatusError as exc:
-        print(f"Error: {exc.response.json()}")  # add logging
+    _post("sendMessage", {"chat_id": TELEGRAM_CHAT_ID, "text": text})

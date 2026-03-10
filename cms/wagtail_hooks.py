@@ -1,4 +1,3 @@
-from django.db import transaction
 from django.http import HttpRequest
 from django.templatetags.static import static
 from django.utils.html import format_html_join
@@ -9,8 +8,7 @@ from wagtail.snippets.models import register_snippet
 
 from cms.page_viewsets import MapPageViewSet, map_viewset
 from cms.snippets import MapPointViewSet, MessageViewSet
-from cms.tasks import send_telegram_message
-from config.models import OutboxStatus, OutboxTask
+from cms.utils import enqueue_page_event
 
 
 register_snippet(MapPointViewSet)
@@ -61,28 +59,15 @@ def insert_admin_css() -> str:
     )
 
 
-def _enqueue_page_event(page: Page, message: str, task_name: str) -> None:
-    outbox = OutboxTask.objects.create(
-        payload={
-            "page_id": page.id,
-            "title": page.title,
-            "message_text": message,
-        },
-        task_name=task_name,
-        status=OutboxStatus.PENDING,
-    )
-    transaction.on_commit(lambda: send_telegram_message.delay(outbox.id))
-
-
 @hooks.register("after_publish_page")
 def handle_publish(request: HttpRequest, page: Page) -> None:
-    _enqueue_page_event(
+    enqueue_page_event(
         page, f"Published: {page.title}", task_name="send_telegram_message"
     )
 
 
 @hooks.register("after_create_page")
 def handle_draft(request: HttpRequest, page: Page) -> None:
-    _enqueue_page_event(
+    enqueue_page_event(
         page, f"Draft saved: {page.title}", task_name="send_telegram_message"
     )
