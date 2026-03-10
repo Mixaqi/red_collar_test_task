@@ -1,8 +1,11 @@
+import logging
+
 from httpx import Client
 
 from config.settings import TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID
 
 
+logger = logging.getLogger(__name__)
 _client = Client(base_url=f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/")
 
 
@@ -12,4 +15,5 @@ def _post(method: str, data: dict[str, str | int]) -> None:
 
 
 def send_message(text: str) -> None:
+    logger.debug("Sending Telegram message: %s", text)
     _post("sendMessage", {"chat_id": TELEGRAM_CHAT_ID, "text": text})

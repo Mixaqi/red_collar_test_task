@@ -1,3 +1,4 @@
+import logging
 from uuid import uuid4
 
 from django.db.models import (
@@ -9,6 +10,9 @@ from django.db.models import (
     TextChoices,
     UUIDField,
 )
+
+
+logger = logging.getLogger(__name__)
 
 
 class TimeStampedModel(Model):
@@ -40,11 +44,23 @@ class OutboxTask(TimeStampedModel):
         self.status = OutboxStatus.FAILED
         self.retries = retries
         self.save(update_fields=["status", "retries"])
+        logger.warning(
+            "OutboxTask FAILED: ID = %s, task_name = '%s', retries=%s",
+            self.id,
+            self.task_name,
+            retries,
+        )
 
     def mark_success(self, retries: int) -> None:
         self.status = OutboxStatus.SUCCESS
         self.retries = retries
         self.save(update_fields=["status", "retries"])
+        logger.info(
+            "OutboxTask SUCCESS: ID = %s, task_name = '%s', retries = %s",
+            self.id,
+            self.task_name,
+            retries,
+        )
 
     def __str__(self) -> str:
         return f"{self.task_name} ({self.status})"

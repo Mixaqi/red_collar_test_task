@@ -1,3 +1,5 @@
+import logging
+
 from django.http import HttpRequest
 from django.templatetags.static import static
 from django.utils.html import format_html_join
@@ -10,6 +12,8 @@ from cms.page_viewsets import MapPageViewSet, map_viewset
 from cms.snippets import MapPointViewSet, MessageViewSet
 from cms.utils import enqueue_page_event
 
+
+logger = logging.getLogger(__name__)
 
 register_snippet(MapPointViewSet)
 register_snippet(MessageViewSet)
@@ -61,11 +65,17 @@ def insert_admin_css() -> str:
 
 @hooks.register("after_publish_page")
 def handle_publish(request: HttpRequest, page: Page) -> None:
+    logger.info(
+        "Page published: %s (ID = %s) by user %s", page.title, page.id, request.user
+    )
     enqueue_page_event(page, f"Published: {page.title}", task_name="publish_message")
 
 
 @hooks.register("after_create_page")
 def handle_draft(request: HttpRequest, page: Page) -> None:
+    logger.info(
+        "Page draft saved: %s (ID = %s) by user %s", page.title, page.id, request.user
+    )
     enqueue_page_event(
         page, f"Draft saved: {page.title}", task_name="save_draft_message"
     )
