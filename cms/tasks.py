@@ -23,20 +23,17 @@ def send_telegram_message(self: Task, outbox_id: str) -> None:
         send_message(message_text)
 
         outbox.status = OutboxStatus.SUCCESS
-        outbox.save(update_fields=["status"])
+        outbox.retries = self.request.retries
+        outbox.save(update_fields=["status", "retries"])
 
-    except RequestError as e:
+    except (RequestError, HTTPStatusError) as e:
         outbox.status = OutboxStatus.FAILED
-        outbox.save(update_fields=["status"])
-
-        raise self.retry(exc=e) from e
-
-    except HTTPStatusError as e:
-        outbox.status = OutboxStatus.FAILED
-        outbox.save(update_fields=["status"])
+        outbox.retries = self.request.retries
+        outbox.save(update_fields=["status", "retries"])
 
         raise self.retry(exc=e) from e
 
     except Exception:
         outbox.status = OutboxStatus.FAILED
-        outbox.save(update_fields=["status"])
+        outbox.retries = self.request.retries
+        outbox.save(update_fields=["status", "retries"])

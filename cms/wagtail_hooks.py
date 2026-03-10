@@ -61,13 +61,11 @@ def insert_admin_css() -> str:
 
 @hooks.register("after_publish_page")
 def handle_publish(request: HttpRequest, page: Page) -> None:
-    enqueue_page_event(
-        page, f"Published: {page.title}", task_name="send_telegram_message"
-    )
+    enqueue_page_event(page, f"Published: {page.title}", task_name="publish_message")
 
 
 @hooks.register("after_create_page")
 def handle_draft(request: HttpRequest, page: Page) -> None:
     enqueue_page_event(
-        page, f"Draft saved: {page.title}", task_name="send_telegram_message"
+        page, f"Draft saved: {page.title}", task_name="save_draft_message"
     )

@@ -3,6 +3,7 @@ from uuid import uuid4
 from django.db.models import (
     CharField,
     DateTimeField,
+    IntegerField,
     JSONField,
     Model,
     TextChoices,
@@ -32,6 +33,7 @@ class OutboxTask(TimeStampedModel):
         choices=OutboxStatus.choices,
         default=OutboxStatus.PENDING,
     )
+    retries = IntegerField(default=0)
     payload = JSONField(null=True, blank=True)
 
     def __str__(self) -> str:
