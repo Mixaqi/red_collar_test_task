@@ -1,12 +1,12 @@
-from celery import shared_task
+from celery import Task, shared_task
 from httpx import HTTPStatusError, RequestError
 
 from config.models import OutboxStatus, OutboxTask
 from telegram.utils import send_message
 
 
-@shared_task(acks_late=True)
-def send_telegram_message(outbox_id: str) -> None:
+@shared_task(bind=True, acks_late=True, max_retries=5, default_retry_delay=30)
+def send_telegram_message(self: Task, outbox_id: str) -> None:
     try:
         outbox: OutboxTask = OutboxTask.objects.get(id=outbox_id)
     except OutboxTask.DoesNotExist:
@@ -21,18 +21,22 @@ def send_telegram_message(outbox_id: str) -> None:
     try:
         message_text: str = payload["message_text"]
         send_message(message_text)
-        outbox.status = OutboxStatus.SUCCESS
 
-    except HTTPStatusError as e:
-        outbox.status = OutboxStatus.FAILED
-        print(e)  # add logging
+        outbox.status = OutboxStatus.SUCCESS
+        outbox.save(update_fields=["status"])
 
     except RequestError as e:
         outbox.status = OutboxStatus.FAILED
-        print(e)  # add logging
+        outbox.save(update_fields=["status"])
 
-    except Exception as e:
+        raise self.retry(exc=e) from e
+
+    except HTTPStatusError as e:
         outbox.status = OutboxStatus.FAILED
-        print(e)  # add logging
+        outbox.save(update_fields=["status"])
 
-    outbox.save(update_fields=["status"])
+        raise self.retry(exc=e) from e
+
+    except Exception:
+        outbox.status = OutboxStatus.FAILED
+        outbox.save(update_fields=["status"])
