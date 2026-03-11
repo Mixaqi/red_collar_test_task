@@ -1,7 +1,7 @@
 # Geo API (Django, Wagtail, PostGIS)
 
-This is a simple Geo API built with **Django**, **Django REST Framework**, **Docker**, **Wagtail** and **PostgreSQL + PostGIS**.
-The project provides authentication, geo point management, wagtail admin panel, and geo-based search.
+This is a simple Geo API built with **Django**, **Django REST Framework**, **Docker**, **Wagtail**, **PostgreSQL + PostGIS**, **Redis** and **Celery**.
+The project provides authentication, geo point management, Wagtail admin panel, geo-based search, and asynchronous message sending via Telegram.
 
 ---
 
@@ -14,6 +14,8 @@ The project provides authentication, geo point management, wagtail admin panel, 
 - Wagtail
 - PostgreSQL + PostGIS
 - GeoDjango
+- Redis
+- Celery
 - SimpleJWT
 - uv
 - pytest
@@ -31,6 +33,7 @@ The project provides authentication, geo point management, wagtail admin panel, 
 - PostgreSQL with PostGIS extension enabled
 - GDAL
 - GEOS
+- Redis
 - Docker (out of the box)
 
 ---
@@ -52,7 +55,7 @@ GDAL_LIBRARY_PATH=/usr/lib/libgdal.so
 GEOS_LIBRARY_PATH=/usr/lib/libgeos_c.so
 ```
 
-## Installation & Setup
+## Installation & Setup (Will be deprecated in future (use Docker approach))
 
 ### 1. Clone the repository
 ```bash
@@ -67,23 +70,31 @@ uv sync
 ### 3. Create .env file in the root directory to store your configuration (check .env.example)
 
 ```
-#django
+# Django
 SECRET_KEY
 DEBUG
 
-#geolibraries
+# Geo libraries
 GDAL_LIBRARY_PATH
 GEOS_LIBRARY_PATH
 
-#db (Postgres + PostGIS)
+# Database (Postgres + PostGIS)
 POSTGRES_DB
 POSTGRES_USER
 POSTGRES_PASSWORD
 POSTGRES_HOST
 POSTGRES_PORT
 
-#wagtail
+# Redis & Celery
+REDIS_HOST
+REDIS_PASSWORD
+
+# Wagtail
 WAGTAILADMIN_BASE_URL
+
+# Telegram
+TELEGRAM_BOT_TOKEN
+TELEGRAM_CHAT_ID
 ```
 
 ### Database & Server management
@@ -124,8 +135,13 @@ cd red_collar_test_task
 #django
 SECRET_KEY
 DEBUG
+DJANGO_LOG_LEVEL
 
-#db (Postgres + PostGIS)
+DJANGO_SUPERUSER_USERNAME
+DJANGO_SUPERUSER_EMAIL
+DJANGO_SUPERUSER_PASSWORD
+
+#db
 POSTGRES_DB
 POSTGRES_USER
 POSTGRES_PASSWORD
@@ -134,15 +150,23 @@ POSTGRES_PORT
 
 #wagtail
 WAGTAILADMIN_BASE_URL
+
+#redis
+REDIS_PASSWORD
+REDIS_HOST
+
+#celery
+CELERY_BROKER_URL
+
+#telegram
+TELEGRAM_BOT_TOKEN
+TELEGRAM_CHAT_ID
 ```
 
 ### 3. Run in terminal
 ```bash
 docker-compose up --build
 ```
-
-
-
 
 # Endpoints
 Base URL
@@ -155,7 +179,7 @@ All protected endpoints require JWT authentication
 Authorization: Bearer <access token>
 ```
 
-## Authentication 
+## Authentication
 ```/api/auth/```
 
 ### Register:
@@ -378,5 +402,3 @@ Authorization: Bearer <access token>
 * 400 - incorrect data in query
 * 401 - unauthorized
 * 404 - Not found
-
-
