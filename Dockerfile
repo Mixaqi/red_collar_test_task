@@ -14,7 +14,9 @@ RUN apt-get update \
 
 RUN useradd -m -u 1000 appuser \
     && curl -Ls https://astral.sh/uv/install.sh | bash \
-    && mv /root/.local/bin/uv /usr/local/bin/uv
+    && mv /root/.local/bin/uv /usr/local/bin/uv \
+    && mkdir -p /home/appuser/app \
+    && chown appuser:appuser /home/appuser/app
 
 USER appuser
 WORKDIR /home/appuser/app
