@@ -11,6 +11,16 @@ logger = logging.getLogger(__name__)
 
 
 def enqueue_page_event(page: Page, message: str, task_name: str) -> None:
+    """Create an OutboxTask for a page event and schedule a Telegram message.
+
+    This function creates an OutboxTask instance with the given page information
+    and message, marks it as pending, and schedules a Celery task to send the
+    message to Telegram after the current database transaction commits.
+
+    Args:
+        page (Page): The Wagtail Page instance associated with this event.
+        message (str): The message text to send via Telegram.
+        task_name (str): The name of the task/event being logged."""
     outbox = OutboxTask.objects.create(
         payload={
             "page_id": page.id,

@@ -65,6 +65,14 @@ def insert_admin_css() -> str:
 
 @hooks.register("after_publish_page")
 def handle_publish(request: HttpRequest, page: Page) -> None:
+    """Handle the event after a Wagtail page is published.
+
+    Logs the publication and enqueues a Telegram notification task.
+
+    Args:
+        request (HttpRequest): The HttpRequest object containing user information.
+        page (Page): The Page object that was published.
+    """
     logger.info(
         "Page published: %s (ID = %s) by user %s", page.title, page.id, request.user
     )
@@ -73,6 +81,14 @@ def handle_publish(request: HttpRequest, page: Page) -> None:
 
 @hooks.register("after_create_page")
 def handle_draft(request: HttpRequest, page: Page) -> None:
+    """Handle the event after a Wagtail page draft is created.
+
+    Logs the draft creation and enqueues a Telegram notification task.
+
+    Args:
+        request (HttpRequest): The HttpRequest object containing user information.
+        page (Page): The Page object that was created as a draft.
+    """
     logger.info(
         "Page draft saved: %s (ID = %s) by user %s", page.title, page.id, request.user
     )
