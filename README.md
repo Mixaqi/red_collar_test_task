@@ -165,7 +165,7 @@ TELEGRAM_CHAT_ID
 
 ### 3. Run in terminal
 ```bash
-docker-compose up --build
+docker compose --env-file .env.docker up --build
 ```
 
 # Endpoints
