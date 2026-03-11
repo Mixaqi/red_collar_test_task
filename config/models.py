@@ -4,9 +4,9 @@ from uuid import uuid4
 from django.db.models import (
     CharField,
     DateTimeField,
-    IntegerField,
     JSONField,
     Model,
+    PositiveIntegerField,
     TextChoices,
     UUIDField,
 )
@@ -48,7 +48,7 @@ class OutboxTask(TimeStampedModel):
         id (UUIDField): UUID primary key of the task.
         task_name (CharField): Name of the task.
         status (CharField): Current status of the task (PENDING, SUCCESS, FAILED).
-        retries (IntegerField): Number of times the task has been retried.
+        retries (PositiveIntegerField): Number of times the task has been retried.
         payload (JSONField): Optional dictionary containing task-specific data.
     """
 
@@ -59,7 +59,7 @@ class OutboxTask(TimeStampedModel):
         choices=OutboxStatus.choices,
         default=OutboxStatus.PENDING,
     )
-    retries = IntegerField(default=0)
+    retries = PositiveIntegerField(default=0)
     payload = JSONField(null=True, blank=True)
 
     def mark_failed(self, retries: int) -> None:
@@ -72,7 +72,7 @@ class OutboxTask(TimeStampedModel):
         """
         self.status = OutboxStatus.FAILED
         self.retries = retries
-        self.save(update_fields=["status", "retries"])
+        self.save(update_fields=["status", "retries", "updated_at"])
         logger.warning(
             "OutboxTask FAILED: ID = %s, task_name = '%s', retries=%s",
             self.id,
@@ -90,7 +90,7 @@ class OutboxTask(TimeStampedModel):
         """
         self.status = OutboxStatus.SUCCESS
         self.retries = retries
-        self.save(update_fields=["status", "retries"])
+        self.save(update_fields=["status", "retries", "updated_at"])
         logger.info(
             "OutboxTask SUCCESS: ID = %s, task_name = '%s', retries = %s",
             self.id,
