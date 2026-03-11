@@ -164,6 +164,7 @@ CELERY_RESULT_BACKEND = "django-db"
 CELERY_BROKER_URL: str = config("CELERY_BROKER_URL")
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_SOFT_TIME_LIMIT = 60
+CELERY_WORKER_HIJACK_ROOT_LOGGER = False
 
 TELEGRAM_BOT_TOKEN = config("TELEGRAM_BOT_TOKEN")
 TELEGRAM_CHAT_ID: int = config("TELEGRAM_CHAT_ID")
@@ -172,14 +173,23 @@ LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
     "formatters": {
-        "standard": {
-            "format": "%(asctime)s | %(levelname)-8s | %(name)s | %(message)s",
+        "colored": {
+            "()": "colorlog.ColoredFormatter",
+            "format": "%(asctime)s | %(log_color)s%(levelname)-8s%(reset)s | %(name)s | %(message)s",
             "datefmt": "%Y-%m-%d %H:%M:%S",
+            "log_colors": {
+                "DEBUG": "cyan",
+                "INFO": "green",
+                "WARNING": "yellow",
+                "ERROR": "red",
+                "CRITICAL": "bold_red",
+            },
         },
     },
     "handlers": {
         "console": {
             "class": "logging.StreamHandler",
+            "formatter": "colored",
         },
     },
     "root": {
@@ -188,6 +198,11 @@ LOGGING = {
     },
     "loggers": {
         "django": {
+            "handlers": ["console"],
+            "level": config("DJANGO_LOG_LEVEL", "INFO"),
+            "propagate": False,
+        },
+        "celery": {
             "handlers": ["console"],
             "level": config("DJANGO_LOG_LEVEL", "INFO"),
             "propagate": False,
